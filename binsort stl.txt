@@ -1,3 +1,4 @@
+//鐢ㄧ被瀹炵幇涓�涓《鎺掑簭
 #include<iostream>
 #include<functional>
 #include<array>
@@ -21,7 +22,7 @@ struct studentrecord
 	int score;
 	string name;
 
-	studentrecord() { ; }//空构造函数
+	studentrecord() { ; }//驴脮鹿鹿脭矛潞炉脢媒
 	studentrecord(int score, string name)
 	{
 		this->score = score;
