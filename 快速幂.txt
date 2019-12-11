@@ -1,3 +1,4 @@
+//位运算入门板子
 #include<iostream>
 #include<string>
 #include<algorithm>
