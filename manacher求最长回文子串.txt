@@ -1,4 +1,6 @@
-#include<iostream>//leetcode����ˢ���¼
+//字符串算法manacher 人称马拉车，不过我更喜欢叫它魔法车。
+//用来处理回文子串
+include<iostream>//leetcodeÉÏÓÐË¢Ìâ¼ÇÂ¼
 #include<string>
 #include<algorithm>
 #include<numeric>
