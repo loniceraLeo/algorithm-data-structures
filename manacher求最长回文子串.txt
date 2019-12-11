@@ -1,0 +1,48 @@
+#include<iostream>//leetcode上有刷题记录
+#include<string>
+#include<algorithm>
+#include<numeric>
+#include<vector>
+#include<iterator>
+using namespace std;             
+string theAnswer;
+string manacher(string str)
+{
+	int length = str.length(),
+		* dp = new int[length],
+		maxRight = 0,
+		maxCenter = 0,
+		maxLength = 0;
+	fill(dp, dp + length, 0);
+	for (int i = 1; i < length; ++i)
+	{
+		dp[i] = i < maxRight ? min(maxRight - i, dp[2 * maxCenter - i]) : 1;
+		while (str[i - dp[i]] == str[i + dp[i]]) ++dp[i];
+		if (dp[i] > maxLength)
+		{
+			maxLength = dp[i];
+			theAnswer = str.substr(i - dp[i] + 1, 2 * dp[i] - 1);
+		}
+		if (i + dp[i] > maxRight)
+		{
+			maxRight = i + dp[i];
+			maxCenter = i;
+		}
+	}
+	for (int i = 0; i < theAnswer.length(); ++i)
+		if (theAnswer[i] == '#') theAnswer.erase(i, 1);
+	return theAnswer;
+}
+int main(int argc, char* argv)
+{
+	string s1, s2;
+	cin >> s1;
+	s2 += "@#";
+	for (int i = 0; i < s1.length(); ++i)
+	{
+		s2 += s1[i];
+		s2 += '#';
+	}
+	cout << manacher(s2);
+	return 0;
+}
