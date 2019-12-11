@@ -1,3 +1,4 @@
+//相当基础的板子
 #include<iostream>
 #include<string>
 #include<algorithm>
@@ -9,7 +10,7 @@ int gcd(int a, int b)	//a>b
 {
 	return b == 0 ? a : gcd(b, a % b);	//q.e.d
 }
-int exgcd(int a, int b,int& x, int& y)	//���淽��ax+by=gcd(a,b);
+int exgcd(int a, int b,int& x, int& y)	//Çó±´×æ·½³Ìax+by=gcd(a,b);
 {
 	if (b == 0)
 	{
