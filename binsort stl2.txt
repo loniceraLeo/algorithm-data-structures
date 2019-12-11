@@ -1,0 +1,132 @@
+#include<iostream>
+#include<functional>
+#include<array>
+#include<deque>
+#include<vector>
+#include<list>
+#include<ctime>
+#include<stack>
+#include<iomanip>
+#include<numeric>
+#include<map>
+#include<forward_list>
+#include<fstream>
+#include<algorithm>
+#include<iterator>
+#include<string>
+#include<sstream>
+using namespace std;
+struct studentrecord
+{
+	int score;
+	string name;
+
+	studentrecord() { ; }//空构造函数
+	studentrecord(int score, string name)
+	{
+		this->score = score;
+		this->name = name;
+	}
+	int operator !=(const studentrecord& k) const
+	{
+		return this->score != k.score;
+	}
+	operator int()
+	{
+		return this->score;
+	}
+};
+template<class T>
+class mylist :public list<T>
+{
+protected:
+	void checkTheIndexofList(short index);
+public:
+	void deleteTheIndexOfList(short);
+	studentrecord at(short index);
+};
+template<class T>
+void mylist<T>::checkTheIndexofList(short index)
+{
+	if (index<0 || index>this->size())
+	{
+		ostringstream stringerrorinformation;
+		stringerrorinformation << "this index is unfair";
+		cout << stringerrorinformation.str();
+		throw (stringerrorinformation.str());
+	}
+}
+template<class T>
+void mylist<T>::deleteTheIndexOfList(short index)
+{
+	this->checkTheIndexofList(index);
+
+	short sum = 0;
+	typename mylist<T>::iterator i1 = this->begin();
+	while (sum != index)
+	{
+		++i1;
+		++sum;
+	}
+	this->erase(i1);
+}
+ostream& operator<<(ostream& out, const studentrecord& student)
+{
+	out << student.name << ":" << student.score << endl;
+	return out;
+}
+void binsort(mylist<studentrecord>& thechain, int range)
+{
+	mylist<studentrecord>* bin;
+	bin = new mylist<studentrecord>[range + 1];
+
+	int numberOfTheList = thechain.size();
+	for (int i = 0; i <= numberOfTheList-1; ++i)
+	{
+		studentrecord stmid = thechain.front();
+		bin[stmid.score].push_back(stmid);
+		thechain.erase(begin(thechain));
+	}
+
+	for (int i = range; i >= 0; --i)
+		while (!bin[i].empty())
+		{
+			thechain.push_front(bin[i].front());
+			bin[i].erase(bin[i].begin());
+		}
+	
+	delete[]bin;
+}
+template<class T>
+studentrecord mylist<T>::at(short index)
+{
+	this->checkTheIndexofList(index);
+	int sum = 0;
+	auto iter = this->begin();
+	for (; sum != index; ++sum) ++iter;
+	return *iter;
+}
+int main()
+{
+	studentrecord currentstudent;
+	mylist<studentrecord> chain;
+	studentrecord finalChoice;
+	int n; cin >> n;
+	for (int i = 0; i <= n - 1; ++i)
+	{
+		cin >> currentstudent.name;
+		cin >> currentstudent.score;
+		chain.push_back(currentstudent);
+	}
+	binsort(chain, 100);
+	for (auto i : chain)
+		cout << i;
+	cout << endl;
+	cout << "请输入序号:"; cin >> n;
+	finalChoice=chain.at(n);
+	cout << finalChoice << endl;
+	chain.deleteTheIndexOfList(n);
+	for (auto i : chain)
+		cout << i;
+	return 0;
+}

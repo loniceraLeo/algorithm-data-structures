@@ -1,0 +1,120 @@
+#include<iostream>
+#include<functional>
+#include<array>
+#include<deque>
+#include<vector>
+#include<list>
+#include<ctime>
+#include<stack>
+#include<iomanip>
+#include<numeric>
+#include<map>
+#include<forward_list>
+#include<fstream>
+#include<algorithm>
+#include<iterator>
+#include<string>
+#include<sstream>
+using namespace std;
+struct studentrecord
+{
+	int score;
+	string name;
+
+	studentrecord() { ; }//¿Õ¹¹Ôìº¯Êý
+	studentrecord(int score, string name)
+	{
+		this->score = score;
+		this->name = name;
+	}
+	int operator !=(const studentrecord& k) const
+	{
+		return this->score != k.score;
+	}
+	operator int()
+	{
+		return this->score;
+	}
+};
+ostream& operator<<(ostream& out, const studentrecord& student)
+{
+	out << student.name << ":" << student.score << endl;
+	return out;
+}
+void binsort(list<studentrecord>& thechain, int range)
+{
+	list<studentrecord>* bin;
+	bin = new list<studentrecord>[range + 1];
+
+	int numberofElements = thechain.size();
+	for (int i = 1; i <= numberofElements; ++i)
+	{
+		studentrecord x = thechain.front();
+		thechain.erase(thechain.begin());
+		bin[x.score].push_front(x);
+	}
+
+	for (int j = range; j >= 0; --j)
+		while (!bin[j].empty())
+		{
+			studentrecord x = bin[j].front();
+			bin[j].erase(bin[j].begin());
+			thechain.push_front(x);
+		}
+	delete[]bin;
+}
+template<class T>
+class mylist :public list<T>
+{
+protected:
+	void checkTheIndexofList(short index);
+public:
+	void deleteTheIndexOfList(mylist<T>&, short);
+};
+template<class T>
+void mylist<T>::checkTheIndexofList(short index)
+{
+	if (index<0 || index>this->size())
+	{
+		ostringstream stringerrorinformation;
+		stringerrorinformation << "this index is unfair";
+		cout << stringerrorinformation.str();
+		throw (stringerrorinformation.str());
+	}
+}
+template<class T>
+void mylist<T>::deleteTheIndexOfList(mylist<T>& Lis, short index)
+{
+	this->checkTheIndexofList(index);
+
+	short sum = 0;
+	typename mylist<T>::iterator i1 = Lis.begin();
+	while (sum != index)
+	{
+		++i1;
+		++sum;
+	}
+	Lis.erase(i1);
+}
+int main()
+{
+	studentrecord currentstudent;
+	mylist<studentrecord> chain;
+	int n; cin >> n;
+	int score; string name;
+	name = "hello!";
+	for (int i = 0; i <= n - 1; ++i)
+	{
+		cin >> currentstudent.name;
+		cin >> currentstudent.score;
+		chain.push_back(currentstudent);
+	}
+	binsort(chain, 100);
+	for (auto i : chain)
+		cout << i;
+	cout << endl;
+	cin >> n; cout << endl;
+	chain.deleteTheIndexOfList(chain, n);
+	for (auto i : chain) cout << i;
+	return 0;
+}

@@ -1,0 +1,99 @@
+#include<iostream>
+#include<array>
+#include<deque>
+#include<vector>
+#include<list>
+#include<stack>
+#include<queue>
+#include<fstream>
+#include<algorithm>
+#include<iterator>
+#include<string>
+#include<sstream>
+#define debug
+using namespace std;
+template<typename T>
+class newQueue :public queue<T>
+{
+public:
+	newQueue() {};
+	newQueue(int length);
+	T at(int index);
+	void clear();
+};
+template <class T>
+void newQueue<T>::clear()
+{
+	while (!this->empty())
+		this->pop();
+}
+template<typename T>
+newQueue<T>::newQueue(int length)
+{
+	for (int i = 0; i <= length - 1; ++i)
+		this->push(0);
+}
+template<class T>
+T newQueue<T>::at(int index)
+{
+	newQueue<T> midqueue(*this);
+	for (int i = 0; i <=index - 1; ++i)
+	{
+		midqueue.pop();
+	}
+	return midqueue.front();
+}                               
+ struct position 
+{
+	int row;
+	int col;
+};
+ typedef position P;
+bool findPath(int size,int grid[][20])
+{
+	newQueue<position> q;
+	position here, nbr;
+	position offset[4];
+	offset[0].row = 0; offset[0].col = 1;
+	offset[1].row = 0; offset[1].col = -1;
+	offset[2].row = 1; offset[2].col = 0;
+	offset[3].row = -1; offset[3].col = 0;
+	int id = 1;
+	for (int i = 1; i <= size; ++i)
+		for (int j = 1; j <= size; ++j)
+		{
+			if (grid[i][j] == 1)
+			{
+				grid[i][j] = ++id;
+				here.row = i; here.col = j;
+				while (1)
+				{
+					for (int i = 0; i <= 3; ++i)
+					{
+						nbr.row = offset[i].row + here.row;
+						nbr.col = offset[i].col + here.col;
+						if (grid[nbr.row][nbr.col] == 1) 
+						{
+							grid[nbr.row][nbr.col] = id;
+							q.push(nbr);
+						}
+					}
+					if (q.empty()) break;
+					here = q.front();
+					q.pop();
+				}
+			}
+		}
+	cout << id-1;
+	return false;
+}
+int main()
+{
+	int size=0, grid[20][20];
+	cin >> size;
+	for (int i = 1; i <= size ; ++i)
+		for (int j = 1; j <= size ; ++j)
+			cin >> grid[i][j];
+	findPath(size,grid);
+	return 0;
+}

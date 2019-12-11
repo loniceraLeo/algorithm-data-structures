@@ -1,0 +1,32 @@
+#include<iostream>
+#include<string>
+#include<algorithm>
+#include<numeric>
+#include<vector>
+#include<iterator>
+using namespace std;             
+int gcd(int a, int b)	//a>b
+{
+	return b == 0 ? a : gcd(b, a % b);	//q.e.d
+}
+int exgcd(int a, int b,int& x, int& y)	//Çó±´×æ·½³Ìax+by=gcd(a,b);
+{
+	if (b == 0)
+	{
+		x = 1; y = 0;
+		return a;
+	}
+	int n = exgcd(b, a % b, x, y);
+	int temp = y;
+	y = x - a / b * y;
+	x = temp;
+	return n;
+}
+int main(int argc, char* argv)
+{
+	int x = 0, y = 0;
+	std::cout << gcd(28, 7) << endl;
+	exgcd(28, 7, x, y);
+	std::cout << x << ends << y;
+	return 0;
+}
