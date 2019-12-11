@@ -1,0 +1,24 @@
+#include<iostream>
+#include<string>
+#include<algorithm>
+#include<numeric>
+#include<vector>
+#include<iterator>
+using namespace std;             
+int length = 0;
+int quickPow(int a, int b)
+{
+	int result = 1, row = a;
+	while (b)
+	{
+		if (b & 1) result *= row;
+		row *= row;
+		b >>= 1;   
+	}
+	return result;
+}
+int main(int argc, char* argv)
+{
+	std::cout<<quickPow(3, 5);
+	return 0;
+}
