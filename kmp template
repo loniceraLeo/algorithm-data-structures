@@ -1,0 +1,59 @@
+//来来来kmp板子
+#include<iostream>
+#include<string>
+#include<algorithm>
+#include<numeric>
+#include<vector>
+#include<iterator>
+#include<unordered_map>
+#include<queue>
+#include<list>
+using namespace std;    //O(m+n)
+void getNext(int* next, string str)
+{
+	int k = -1,
+		j = 0;
+	next[0] = -1;
+	while (j < str.length()-1)
+	{
+		if (k == -1 || str[k] == str[j])
+		{
+			++k;
+			++j;
+			if (str[k] == str[j]) next[j] = next[k];
+			else next[j] = k;
+		}
+		else
+			k = next[k];
+	}
+}
+int kmp(int* next, string s1, string s2)
+{
+	int i = 0,
+		j = 0;
+	int t1 = s1.length(),
+		t2 = s2.length();
+	while (i < t1 && j < t2)
+	{
+		if (j==-1 || s1[i] == s2[j])
+		{
+			++i;
+			++j;
+		}
+		else
+		{
+			j = next[j];
+		}
+	}
+	if (j == s2.length()) return i - j;
+	else return -1;
+}
+int main(int argc, char* argv)
+{
+	string s1, s2;
+	cin >> s1 >> s2;
+	int* next = new int[s2.length()];
+	getNext(next, s2);
+	cout << kmp(next, s1, s2);
+	return 0;
+}
