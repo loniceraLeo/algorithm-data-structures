@@ -1,0 +1,13 @@
+堆是一种十分特殊的数据结构，它基于一颗完全二叉树。堆分为大根堆和小根堆。在大根堆中，父节点都大于子节点，而小根堆则刚好相反。
+堆可以用来实现一种复杂度为O(nlogn)的排序算法，即堆排序。堆排序是一种高效率的排序算法，而且，它是稳定的。
+
+#include<algorighm> //所有的heap操作都定义在algorithm头文件中
+
+#define mh make_heap
+#define ih is_heap
+#define ph push_heap
+#define poph pop_heap
+#define ihu is_heap_until
+#define sh sort_heap
+
+注意heap的创建及操作都仅支持迭代器访问。
