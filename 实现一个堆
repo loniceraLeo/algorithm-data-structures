@@ -1,0 +1,123 @@
+//stl自带的heap真是慢，而且抹消了其多态性。于是我又造了一次轮子。。。代码如下
+#include<iostream>
+#include<string>
+#include<algorithm>
+#include<numeric>
+#include<unordered_map>
+#include<vector>
+#include<iterator>
+#include<queue>
+#include<list>
+//#define debug
+using namespace std;    
+void getNext(int* next, string str)
+{
+	int k = -1,
+		j = 0;
+	next[0] = -1;
+	while (j < str.length())
+	{
+		if (k == -1 || str[k] == str[j])
+		{
+			++k;
+			++j;
+			if (str[k] == str[j])
+				next[j] = next[k];
+			else next[j] = k;
+		}
+		else k = next[k];
+	}
+	return;
+}
+template<class T>
+class heap
+{
+private:
+	T* heapArray;
+	int theLength;
+public:
+	void push(const T& theElement);
+	void pop();
+	void initialize(T*theArray,int size);
+	T top();
+	bool empty();
+	heap() { theLength = 0; }
+};
+#define DEFT template<class T>
+DEFT
+bool heap<T>::empty()
+{
+	return theLength == 0 ? true : false;
+}
+DEFT
+T heap<T>::top()
+{
+	return heapArray[1];
+}
+DEFT
+void heap<T>::push(const T&e)
+{
+	heapArray[++theLength] = e;
+	int currentNode = theLength;
+	while(currentNode!=1 && heapArray[currentNode/2]<e)
+	{
+		heapArray[currentNode] = heapArray[currentNode / 2];
+		currentNode /= 2;
+	}
+	heapArray[currentNode] = e;
+}
+DEFT
+void heap<T>::pop()
+{		
+	if (theLength == 0) return;
+	~heapArray[1];
+	T lastElement = heapArray[theLength--];
+	T currentNode = 1,
+		child = 2;
+	while (child <= theLength)
+	{
+		if (child < theLength && heapArray[child] < heapArray[child + 1])
+			++child;
+		if (lastElement > heapArray[child]) break;
+		heapArray[currentNode] = heapArray[child];
+		currentNode = child;
+		child *= 2;
+	}
+	heapArray[currentNode] = lastElement;
+}
+DEFT
+void heap<T>::initialize(T *theArray,int size)
+{
+	if (theLength == 0) delete[]heap::heapArray;
+	heapArray = theArray;
+	this->theLength = size;
+
+	for (int root = theLength / 2; root >= 1; --root)
+	{
+		T currentNode = heapArray[root];
+		T child = root * 2;
+		while (child <= theLength)
+		{
+			if (child < theLength && heapArray[child] < heapArray[child + 1])
+				child++;
+			if (currentNode > heapArray[child]) break;
+			heapArray[child/2] = heapArray[child];
+			child *= 2;
+		}
+		heapArray[child / 2] = currentNode;
+	}
+}
+#define iout(x) ostream_iterator<x>(cout," ")	//for test   osz
+int main()
+{
+	heap<int> myHeap;
+	int* newArr = new int[11]{ 0,2,3,4,1,77,6,23,6,7,8 }; //testing data
+	myHeap.initialize(newArr, 10);
+	cout << myHeap.top();
+	myHeap.push(200);
+	cout << endl << myHeap.top();
+	myHeap.pop();
+	cout << endl << myHeap.top();
+	string s1, s2;
+	return 0;
+}
