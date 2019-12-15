@@ -1,2 +1,7 @@
 #include<iterator>
-#define iout(x) ostream_iterator<x>(cout," ")
+#define iout(x) ostream_iterator<x>(cout," ") //print the data in an order
+
+一元断言函数:
+template<typename T>
+  greater<T>();
+  less<T>();
