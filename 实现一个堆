@@ -10,25 +10,7 @@
 #include<list>
 //#define debug
 using namespace std;    
-void getNext(int* next, string str)
-{
-	int k = -1,
-		j = 0;
-	next[0] = -1;
-	while (j < str.length())
-	{
-		if (k == -1 || str[k] == str[j])
-		{
-			++k;
-			++j;
-			if (str[k] == str[j])
-				next[j] = next[k];
-			else next[j] = k;
-		}
-		else k = next[k];
-	}
-	return;
-}
+
 template<class T>
 class heap
 {
