@@ -1,105 +1,141 @@
 //stl自带的heap真是慢，而且抹消了其多态性。于是我又造了一次轮子。。。代码如下
+//12.17 通过动态增长数组解决了一个bug，经测试无误,ps:增加了两个方法,动态增长数组函数可以使用友元函数
 #include<iostream>
-#include<string>
-#include<algorithm>
-#include<numeric>
 #include<unordered_map>
-#include<vector>
-#include<iterator>
+#include<algorithm>
+#include<string>
 #include<queue>
-#include<list>
-//#define debug
-using namespace std;    
+#include<iterator>
+using namespace std;
 
-template<class T>
-class heap
+#define iout(x) ostream_iterator<x>(cout," ")
+#define deft template<class T>
+deft
+class maxheap
 {
 private:
 	T* heapArray;
 	int theLength;
+	int heapSize;
 public:
-	void push(const T& theElement);
-	void pop();
-	void initialize(T*theArray,int size);
 	T top();
+	void pop();
+	void initialize(T* theArray, int theLength);
+	void push(const T& theElement);
+	void changeTheLength(int length);
 	bool empty();
-	heap() { theLength = 0; }
+	void output();
 };
-#define DEFT template<class T>
-DEFT
-bool heap<T>::empty()
+deft
+void maxheap<T>::output()
 {
-	return theLength == 0 ? true : false;
+	cout << this->heapSize << endl << this->theLength;
 }
-DEFT
-T heap<T>::top()
+deft
+bool maxheap<T>::empty()
+{
+	return theLength == 0;
+}
+deft
+T maxheap<T>::top()
 {
 	return heapArray[1];
 }
-DEFT
-void heap<T>::push(const T&e)
+deft
+void maxheap<T>::initialize(T* theArray, int thenewLength)
 {
-	heapArray[++theLength] = e;
-	int currentNode = theLength;
-	while(currentNode!=1 && heapArray[currentNode/2]<e)
+	//if (this->theLength)
+	//{
+		//delete[]heapArray;
+	//	theLength = 0;
+//	}
+	heapArray = theArray;
+	theLength = thenewLength;
+	heapSize = theLength;
+	for (int root = theLength / 2; root >= 1; --root)
 	{
+		int father = root,
+			child = root * 2;
+		T currentNode = heapArray[father];
+		while (child <= theLength)
+		{
+			if (heapArray[child + 1] > heapArray[child])
+				child++;
+			if (currentNode > heapArray[child]) break;
+			heapArray[father] = heapArray[child];
+			father = child;
+			child *= 2;
+		}
+		heapArray[father] = currentNode;
+	}
+}
+deft
+void maxheap<T>::push(const T& theElement)
+{
+	if (theLength == heapSize)
+	{
+		changeTheLength(theLength);
+		heapSize *= 2;
+	}
+	heapArray[++theLength]=theElement;
+	int currentNode = theLength;
+	auto theCopy = theElement;
+	while (currentNode != 1)
+	{
+		if (heapArray[currentNode / 2] > theCopy) break;
 		heapArray[currentNode] = heapArray[currentNode / 2];
 		currentNode /= 2;
 	}
-	heapArray[currentNode] = e;
+	heapArray[currentNode] = theCopy;
 }
-DEFT
-void heap<T>::pop()
-{		
-	if (theLength == 0) return;
-	~heapArray[1];
-	T lastElement = heapArray[theLength--];
-	T currentNode = 1,
+deft
+void maxheap<T>::pop()
+{
+	heapArray[1].~T();
+	int father = 1,
 		child = 2;
+	auto temp = heapArray[theLength--];
 	while (child <= theLength)
 	{
-		if (child < theLength && heapArray[child] < heapArray[child + 1])
+		if (heapArray[child + 1] > heapArray[child])
 			++child;
-		if (lastElement > heapArray[child]) break;
-		heapArray[currentNode] = heapArray[child];
-		currentNode = child;
+		if (temp > heapArray[child]) break;//life is short,code is long
+		heapArray[father] = heapArray[child];
+		father = child;
 		child *= 2;
 	}
-	heapArray[currentNode] = lastElement;
+	heapArray[father] = temp;
 }
-DEFT
-void heap<T>::initialize(T *theArray,int size)
+deft
+void maxheap<T>::changeTheLength(int length)
 {
-	if (theLength == 0) delete[]heap::heapArray;
-	heapArray = theArray;
-	this->theLength = size;
-
-	for (int root = theLength / 2; root >= 1; --root)
-	{
-		T currentNode = heapArray[root];
-		T child = root * 2;
-		while (child <= theLength)
-		{
-			if (child < theLength && heapArray[child] < heapArray[child + 1])
-				child++;
-			if (currentNode > heapArray[child]) break;
-			heapArray[child/2] = heapArray[child];
-			child *= 2;
-		}
-		heapArray[child / 2] = currentNode;
-	}
+	T* newArray = new T[2 * length+1];
+	fill(newArray, newArray + 2 * length+1, 0);
+	for (int i = 1; i <= length; ++i)
+		newArray[i] = heapArray[i];
+	delete[]heapArray;
+	heapArray = newArray;
 }
-#define iout(x) ostream_iterator<x>(cout," ")	//for test   osz
 int main()
 {
-	heap<int> myHeap;
-	int* newArr = new int[11]{ 0,2,3,4,1,77,6,23,6,7,8 }; //testing data
-	myHeap.initialize(newArr, 10);
-	cout << myHeap.top();
-	myHeap.push(200);
-	cout << endl << myHeap.top();
-	myHeap.pop();
-	cout << endl << myHeap.top();
-	string s1, s2;
+	int* d = new int[6]{ 2,33113,1123,62333,512313,10222 };
+	maxheap<int> mh;
+	mh.initialize(d, 5);
+	for (int i = 0; i < 5; ++i)
+		mh.pop();
+	mh.push(200);
+	mh.push(211);
+	mh.push(333);
+	mh.push(566);
+	mh.push(21);
+	mh.push(2223);
+	mh.push(23);
+	mh.push(23312);
+	mh.push(333);
+	mh.push(78);
+	mh.push(13);
+	mh.push(3);
+	cout << mh.top() << endl;
+	mh.output();
 	return 0;
 }
