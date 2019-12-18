@@ -1,5 +1,6 @@
 //左高树，高度优先可并堆
 //黑书里写的貌似有点问题，自己重写了一下
+//注意节点要引用，否则会出错
 #include<iostream>
 #include<unordered_map>
 #include<algorithm>
