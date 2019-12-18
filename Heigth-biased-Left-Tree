@@ -1,0 +1,136 @@
+//左高树，高度优先可并堆
+//黑书里写的貌似有点问题，自己重写了一下
+#include<iostream>
+#include<unordered_map>
+#include<algorithm>
+#include<string>
+#include<queue>
+#include<iterator>
+using namespace std;
+
+#define iout(x) ostream_iterator<x>(cout," ")
+#define deft template<class T>				//hblt heigth biased length tree
+deft
+struct binaryTreeNode
+{
+	pair<int,T> element;
+	binaryTreeNode<T>* leftChild,
+		*rightChild;
+	binaryTreeNode(T& theElement)
+	{
+		element.first = 1;
+		element.second = theElement;
+		this->leftChild = NULL;
+		this->rightChild = NULL;
+	}
+	binaryTreeNode(T& theElement, binaryTreeNode<T>* left, binaryTreeNode<T>* right)
+	{
+		element.first = 1;
+		element.second = theElement;
+		this->leftChild = left;
+		this->rightChild = right;
+	}
+};
+deft
+class maxHblt
+{
+private:
+	binaryTreeNode<T>* root;
+	int theSize;
+public:
+	void meld(binaryTreeNode<T>* &t1, binaryTreeNode<T>* &t2);
+	void meld(maxHblt<T>& theCopy);
+	void pop();
+	void push(const T theElement);
+	void initialize(T* theElements, int size);
+	T top();
+};
+deft
+T maxHblt<T>::top()
+{
+	return root->element.second;
+}
+deft
+void maxHblt<T>::meld(binaryTreeNode<T>* &t1, binaryTreeNode<T>* &t2)
+{
+	//insert t2 to t1
+	if (t2 == NULL) return;
+	if (t1 == NULL)
+	{
+		t1 = t2;
+		return;
+	}
+	if (t1->element.second < t2->element.second)
+		swap(t1, t2);
+	meld(t1->rightChild, t2);
+	if (t1->leftChild == NULL)
+	{
+		t1->leftChild = t1->rightChild;
+		t1->rightChild = NULL;
+		t1->element.first = 1;
+	}
+	else
+	{
+		if (t1->leftChild->element.first < t1->rightChild->element.first)
+			swap(t1, t2);
+		t1->element.first = t1->rightChild->element.first+1;
+	}
+}
+deft
+void maxHblt<T>::meld(maxHblt& theCopy)
+{
+	meld(root, theCopy.root);
+	theSize += theCopy.theSize;
+}
+deft
+void maxHblt<T>::pop()
+{
+	if (root == NULL) return;
+
+	auto left = root->leftChild,
+		right = root->rightChild;
+	delete root;
+	root = left;
+	meld(root, right);
+	--theSize;
+}
+deft
+void maxHblt<T>::push(T theElement)
+{
+	binaryTreeNode<T>* node = new binaryTreeNode<T>(theElement);
+	meld(root, node);
+	++theSize;
+}
+deft
+void maxHblt<T>::initialize(T* theElements, int size)
+{
+	queue<binaryTreeNode<T>*> q;
+	if (!root) delete root;
+	for (int i = 1; i <= size; ++i)
+	{
+		binaryTreeNode<T>* node = new binaryTreeNode<T>(theElements[i]);
+		q.push(node);
+	}
+	while (q.size()!=1)
+	{
+		auto t1 = q.front();
+		q.pop();
+		auto t2 = q.front();
+		q.pop();
+		meld(t1, t2);
+		q.push(t1);
+	}
+	root = q.front();
+	theSize = size;
+}
+int main()
+{
+	int* arr = new int[6]{ 1,2,6,7,5,7 };
+	maxHblt<int> hblt;
+	hblt.initialize(arr, 5);
+	hblt.push(200);
+	cout << hblt.top()<<endl;
+	hblt.push(250);
+	cout << hblt.top();
+	return 0;
+}
