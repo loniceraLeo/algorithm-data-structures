@@ -1,3 +1,3 @@
 <h1>失魂落魄的时候就仰望星空吧</h1>
 <hr><hr>
-<p>放弃是不可能的</p>
+<p style='text-decoration:underline;'>放弃是不可能的</p>
